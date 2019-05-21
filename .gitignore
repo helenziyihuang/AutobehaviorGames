@@ -1,0 +1,14 @@
+GameEngine/
+
+# CSV files
+*.csv
+
+# Matlab workspace files
+*.mat
+
+*.ignore
+
+*.asv
+
+test.m
+testClass.m
