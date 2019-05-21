@@ -2,7 +2,7 @@ classdef MainGameManager < Manager
     properties (Constant)
         tolerance = 30%the mouse must place the grated circle at most this far from the target ring to win
         leftProportionInterval = 5;
-        waterGiveTime = 0.02;
+        waterGiveTime = 0.04;
         successPauseTime = 2;%time between success and start of next trial
         failPauseTime = 4;%time between trials on failure
         timeOutTime = 10;%time for mouse to succeed before timeout
