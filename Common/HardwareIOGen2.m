@@ -10,7 +10,6 @@ classdef HardwareIOGen2 < Rig
         breakBeamPin = "D11"
         buttonPin = "A4";
         buttonPowerPin = "A5";
-        waterGiveTime = 0.02;%second
     end
     properties(Access = protected)
         %timer
