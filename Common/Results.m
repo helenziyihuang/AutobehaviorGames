@@ -31,6 +31,8 @@ classdef Results < handle
         currentFrame
         frames
         lastSavedFrame
+        saveDir2
+        globalStart
     end
     
     methods
@@ -54,12 +56,12 @@ classdef Results < handle
             %save directory
             obj.sessionID = [datestr(date, 'mmddyy') '_' num2str(obj.sessionNum)];
             obj.saveDir = strcat('Z:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
-            saveDir2 = strcat('C:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
+            obj.saveDir2 = strcat('C:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
             try
                 mkdir(obj.saveDir);
             catch
-                mkdir(saveDir2);
-                obj.saveDir = saveDir2;
+                mkdir(obj.saveDir2);
+                obj.saveDir = obj.saveDir2;
             end
             obj.csvFilename = strcat(obj.saveDir, '/', obj.mouseID, '_', obj.sessionID,'_Frames', '.csv');
             csvHeaders = {'Encoder Reading', 'Lickometer', 'Timestamp'};
@@ -70,6 +72,10 @@ classdef Results < handle
         end
         function [] = StartTrial(obj, stimulusPosition, contrastSeq, startTime)
             obj.currentTrial = obj.currentTrial + 1;
+            if obj.currentTrial<=1
+                c = clock;
+                obj.globalStart = [c(3),c(4)];
+            end
             trialNum = obj.currentTrial;
             obj.stimSequence(trialNum) = stimulusPosition;
             obj.contrastSequence(trialNum) = contrastSeq;
