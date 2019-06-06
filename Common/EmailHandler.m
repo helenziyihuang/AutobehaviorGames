@@ -57,11 +57,11 @@ classdef EmailHandler < GameObject
             end
         end
         function obj = Save(obj)
-            SaveStringArray(obj.recipientFileName,obj.recipientList);
-            SaveStringArray(obj.loginFileName,[obj.recipientList]);
+            SaveStrings(obj.recipientFileName,obj.recipientList);
+            SaveStrings(obj.loginFileName,[obj.recipientList]);
         end
         function obj = Load(obj)
-            vals = csvRead(obj.dataFileName)
+            vals = LoadStrings(obj.dataFileName);
         end
     end
 end

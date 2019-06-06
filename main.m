@@ -1,7 +1,7 @@
 
 clc; 
 clear all;
-addpath('GameEngine');
+addpath('PTB-Game-Engine/GameEngine');
 addpath('Common');
 addpath('Main Game');
 
@@ -9,7 +9,7 @@ requestInput;
 if ~(exist('sender') && exist('psswd') && exist('mailRecipient'))
 emailError; 
 end
-developerMode = false;
+developerMode = true;
 
 if developerMode
 choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
