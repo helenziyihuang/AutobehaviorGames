@@ -55,7 +55,7 @@ classdef HardwareIOGen3 < Rig
         function obj = GiveWater(obj,time)
              writeDigitalPin(obj.arduinoBoard,obj.solenoidPin,1);
              if obj.lastWaterTime>0
-                 time = obj.evaporationConstant*(obj.Game.GetTime() - obj.lastWaterTime);
+                 time = time + obj.evaporationConstant*(obj.Game.GetTime() - obj.lastWaterTime);
              end
              obj.lastWaterTime = obj.Game.GetTime();
              obj.DelayedCall('CloseSolenoid',time);
