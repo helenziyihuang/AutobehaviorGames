@@ -120,7 +120,7 @@ classdef MainGameManager < Manager
                 closeServos = true;
             end
             if running
-                obj.controller.DisableFor(obj.stimPauseTime);
+                obj.controller.DisableFor(obj.stimPauseTime+obj.servoDelay);
                 obj.ioDevice.DelayedCall('OpenServos',obj.stimPauseTime+obj.servoDelay);
             else
                 if closeServos
