@@ -32,7 +32,7 @@ classdef MainGameManager < Manager
             obj.soundMaker = soundMaker;
         end
         function obj = Awake(obj)
-            obj.SetState(false);
+            obj.SetState(false,false);
             obj.WaitForIR();
             obj.currentTrialNum = 0;
         end
@@ -115,12 +115,17 @@ classdef MainGameManager < Manager
                     out = -1;
                 end
         end
-        function obj = SetState(obj,running)
+        function obj = SetState(obj,running,closeServos)
+            if nargin<3
+                closeServos = true;
+            end
             if running
                 obj.controller.DisableFor(obj.stimPauseTime);
                 obj.ioDevice.DelayedCall('OpenServos',obj.stimPauseTime+obj.servoDelay);
             else
-                obj.ioDevice.CloseServos();
+                if closeServos
+                    obj.ioDevice.CloseServos();
+                end
                 obj.controller.enabled = false;
             end
             obj.targetCircle.enabled = running;

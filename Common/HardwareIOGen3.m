@@ -27,10 +27,12 @@ classdef HardwareIOGen3 < Rig
             obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin);
             obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin);
             obj.CloseServos();
+             writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
+             obj.PowerServos(true);
         end
          function out = UnsafeReadJoystick(obj)
             out = readCount(obj.encoder)/obj.maxJoystickValue;
-            if abs(out)>
+            if abs(out)>0
                 out = sign(out);
                 obj.ResetEnc(out);
                 return;
@@ -41,12 +43,8 @@ classdef HardwareIOGen3 < Rig
             end 
          end
         function out = ReadIR(obj)
-             %reason for configure and disconfigure: 
-                %The IR read pin interferes with servo power pins in the Gen2
-                %PCB
-                configurePin(obj.arduinoBoard,obj.breakBeamPin,'pullup');
+               
                out = obj.Try('UnsafeReadIR');
-               configurePin(obj.arduinoBoard,obj.breakBeamPin,'Unset');
         end
         function out = UnsafeReadIR(obj)      
                 out = ~readDigitalPin(obj.arduinoBoard,obj.breakBeamPin);
@@ -64,6 +62,15 @@ classdef HardwareIOGen3 < Rig
         end
         function obj = CloseSolenoid(obj)
             writeDigitalPin(obj.arduinoBoard,obj.solenoidPin,0);
+        end
+        function obj = PositionServos(obj,left,right)
+            obj.PowerServos(true);
+            obj.PositionServos@Rig(left,right);
+            obj.DelayedCall('PowerServos',obj.servoAdjustmentTime,false);
+
+        end
+        function obj = PowerServos(obj,state)
+            writeDigitalPin(obj.arduinoBoard,obj.servoPowerPin,state);
         end
     end
 end

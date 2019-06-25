@@ -21,7 +21,7 @@ end
 if usingKeyboard
     io = Keyboard;
 else
-    choice = menu('Which circuit board are you using?', 'Gen2 (Purple)','Gen3 (Green)','Gen2.1 (Gen3 hardware on purple PCB)');
+    choice = menu('Which circuit board are you using?', 'Gen2 (Purple)','Gen3 (Purple, non-recatngular)','Gen2.1 (Gen3 hardware on purple PCB)');
     switch choice
         case 1
             io = HardwareIOGen2(port);

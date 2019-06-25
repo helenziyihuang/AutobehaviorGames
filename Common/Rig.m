@@ -62,7 +62,6 @@ classdef Rig < IODevice
             end
             obj.leftServo.writePosition(left);
             obj.rightServo.writePosition(right);
-
         end
         function obj = ResetEnc(obj,value)
             if nargin<2
