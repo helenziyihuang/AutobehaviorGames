@@ -9,6 +9,8 @@ classdef HardwareIOGen3 < Rig
         lickmeterReadPin  = "A2"
         breakBeamPin = "D7"
         beamPowerPin = "D4"
+        lickVoltageDelta = 1;
+        lickNominalVoltage = 5;
     end
     methods (Access = public)
         function obj = HardwareIOGen3(port)
@@ -50,7 +52,8 @@ classdef HardwareIOGen3 < Rig
                 out = ~readDigitalPin(obj.arduinoBoard,obj.breakBeamPin);
         end
         function out = ReadLick(obj)
-            out = false;
+            val = readVoltage(obj.arduinoBoard,obj.lickmeterReadPin);
+            out = abs(val-obj.lickNominalVoltage)>obj.lickVoltageDelta;
         end
         function obj = GiveWater(obj,time)
              writeDigitalPin(obj.arduinoBoard,obj.solenoidPin,1);
@@ -72,5 +75,6 @@ classdef HardwareIOGen3 < Rig
         function obj = PowerServos(obj,state)
             writeDigitalPin(obj.arduinoBoard,obj.servoPowerPin,state);
         end
+
     end
 end
