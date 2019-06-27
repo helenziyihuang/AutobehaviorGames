@@ -5,7 +5,7 @@ classdef TargetRing < PhysicsObject
     end
     methods(Access = public)
         function obj = TargetRing()
-            obj.size = ones(2,1)*2*obj.radius;
+            obj.size = ones(1,2)*2*obj.radius;
             obj.renderLayer = 0;
         end
         function img = GenerateImage(obj)

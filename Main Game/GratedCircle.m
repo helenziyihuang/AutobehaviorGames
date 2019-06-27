@@ -11,8 +11,11 @@ classdef GratedCircle < PhysicsObject
             obj.size = ones(1,2)* 2*obj.radius;
             obj.renderLayer = 1;
             obj.screenBounded = true;
-            obj.initialOffset = 4*obj.radius;
             obj.maxPixelsPerFrame = 10;
+        end
+        function obj = Awake(obj)
+            windowSize = obj.Renderer.WindowSize();
+            obj.initialOffset = (windowSize(1)/2-obj.radius)/2;
         end
         function img = GenerateImage(obj)
             gb = imadjust(GenerateGabor(100, pi/4, 64*pi, 0, 1), [0 1], [.5-obj.contrast/2 .5 + obj.contrast/2], .2);
