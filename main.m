@@ -9,7 +9,7 @@ requestInput;
 if ~(exist('sender') && exist('psswd') && exist('mailRecipient'))
 emailError; 
 end
-developerMode = true;
+developerMode = false;
 
 if developerMode
 choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
