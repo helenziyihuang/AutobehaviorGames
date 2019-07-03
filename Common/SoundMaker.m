@@ -12,7 +12,7 @@ properties(Access = private)
 end
 methods(Access = public)
     function obj = SoundMaker()
-        obj.rewardTone = MakeTone(obj.REWARD_TONE_DURATION, obj.REWARD_TONE_FREQUENCY, obj.TONE_SAMPLE_FREQUENCY);
+        obj.rewardTone = obj.MakeTone(obj.REWARD_TONE_DURATION, obj.REWARD_TONE_FREQUENCY, obj.TONE_SAMPLE_FREQUENCY);
         obj.noiseTone = rand(1,floor(0.5*obj.TONE_SAMPLE_FREQUENCY)) - 0.5;
     end
     function obj = BadNoise(obj)
@@ -21,7 +21,7 @@ methods(Access = public)
     function obj = RewardNoise(obj)
          sound(obj.rewardTone,obj.TONE_SAMPLE_FREQUENCY);
     end
-    function tone = MakeTone(duration,freq,fs)
+    function tone = MakeTone(obj,duration,freq,fs)
         t=0:1/fs:duration-1/fs;
         tone = cos(2*pi* freq*t)*.3;
     end
