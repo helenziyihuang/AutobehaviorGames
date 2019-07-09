@@ -30,7 +30,7 @@ else
         case 3
             io = HardwareIOGen2_1(port);
         case 4
-            io = HardwareHeadfixed(port);
+            io = HardwareHeadfixed(port,str2num(rig));
     end
 end
 
