@@ -2,13 +2,13 @@ classdef HardwareHeadfixed < Rig
         properties(Constant)
         leftServoPin = "D11"
         rightServoPin = "D10"
-        encoderPinA = "D2"
-        encoderPinB = "D3"
+        encoderPinA = "D3"
+        encoderPinB = "D2"
         solenoidPin = "A1"
         lickmeterReadPin  = "A5"
         lickmeterPowerPin = "A4"
         minServoPulse = 0.001;
-        maxServopulse = 0.002;
+        maxServoPulse = 0.002;
         
         %table of servo open positions
         %rig number | right open position | left open position
@@ -46,9 +46,9 @@ classdef HardwareHeadfixed < Rig
         end
          function out = UnsafeReadJoystick(obj)
             out = readCount(obj.encoder)/obj.maxJoystickValue;
-            if abs(out)>0
+            if abs(out)>1
                 out = sign(out);
-                obj.ResetEnc(out);
+                obj.ResetEnc(obj.maxJoystickValue);
                 return;
             end
             if abs(out)<obj.joystickResponseThreshold

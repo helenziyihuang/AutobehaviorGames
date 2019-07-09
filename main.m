@@ -17,7 +17,7 @@ usingKeyboard = choice==1;
 else
 usingKeyboard = false;
 end
-
+rect = [0,0,1,1];
 if usingKeyboard
     io = Keyboard;
 else
@@ -31,13 +31,14 @@ else
             io = HardwareIOGen2_1(port);
         case 4
             io = HardwareHeadfixed(port,str2num(rig));
+            rect = [1/3,0,2/3,1];
     end
 end
 
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
 
 
-renderer = Renderer(screenNum);
+renderer = Renderer(screenNum,0.5,rect);
 grating = GratedCircle;
 greenCirc = TargetRing;
 iescape = EscapeQuit;
