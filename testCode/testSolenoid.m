@@ -1,9 +1,9 @@
 clc
 clear all;
 port = 'COM6';
-io = HardwareIOGen3(port);
+io = HardwareIOGen4(port);
 io.Awake();
-while ~GetKey('ESCAPE')
+while ~GetKey('ESC')
     if GetKey('s')
         try
         io.GiveWater(1);

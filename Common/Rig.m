@@ -5,6 +5,8 @@ classdef Rig < IODevice
         servoAdjustmentTime = 0.5;
         evaporationConstant = .15/3600;
         readAttemptsBeforeFailure = 100;
+        minServoPulse = 0.001;
+        maxServoPulse = 0.002;
     end
      properties(Access = protected)
         leftServoOpenPos = 0.4

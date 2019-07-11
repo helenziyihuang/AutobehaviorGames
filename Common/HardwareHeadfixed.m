@@ -7,8 +7,7 @@ classdef HardwareHeadfixed < Rig
         solenoidPin = "A1"
         lickmeterReadPin  = "A5"
         lickmeterPowerPin = "A4"
-        minServoPulse = 0.001;
-        maxServoPulse = 0.002;
+        
         
         %table of servo open positions
         %rig number | right open position | left open position
@@ -48,7 +47,7 @@ classdef HardwareHeadfixed < Rig
             out = readCount(obj.encoder)/obj.maxJoystickValue;
             if abs(out)>1
                 out = sign(out);
-                obj.ResetEnc(obj.maxJoystickValue);
+                obj.ResetEnc(out*obj.maxJoystickValue);
                 return;
             end
             if abs(out)<obj.joystickResponseThreshold

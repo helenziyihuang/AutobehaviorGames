@@ -1,4 +1,4 @@
-classdef HardwareIOGen3 < Rig
+classdef HardwareIOGen4 < Rig
     properties(Constant)
         leftServoPin = "D10"
         rightServoPin = "D9"
@@ -6,16 +6,18 @@ classdef HardwareIOGen3 < Rig
         encoderPinA = "D2"
         encoderPinB = "D3"
         solenoidPin = "D8"
-        lickmeterReadPin  = "A2"
+        lickmeterReadPin  = "A3"
+        lickPowerPin = "D12";
         breakBeamPin = "D7"
         beamPowerPin = "D4"
-        lickVoltageDelta = 1;
+        lickVoltageDelta = 0.1;
         lickNominalVoltage = 5;
+        
     end
     methods (Access = public)
-        function obj = HardwareIOGen3(port)
+        function obj = HardwareIOGen4(port)
             obj.port = port;
-            obj.digitalOutputPins = [obj.solenoidPin, obj.beamPowerPin, obj.servoPowerPin];
+            obj.digitalOutputPins = [obj.solenoidPin, obj.beamPowerPin, obj.servoPowerPin,obj.lickPowerPin];
             obj.digitalInputPins = [];
             obj.analogInputPins = [obj.lickmeterReadPin];
             obj.pullupPins = [obj.breakBeamPin];
@@ -23,20 +25,21 @@ classdef HardwareIOGen3 < Rig
         function obj = Awake(obj)          
             obj.arduinoBoard = arduino(obj.port,'uno','libraries',{'servo','rotaryEncoder'});
             obj.ConfigurePins();            
-            
+            obj.leftServoOpenPos = 0.5;
+            obj.rightServoOpenPos = 0.5;
             obj.encoder = rotaryEncoder(obj.arduinoBoard, obj.encoderPinA,obj.encoderPinB);
             
-            obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin);
-            obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin);
-            obj.CloseServos();
-             writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
-             obj.PowerServos(true);
+            obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
+            obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
+             obj.CloseServos();
+             
+             
         end
          function out = UnsafeReadJoystick(obj)
             out = readCount(obj.encoder)/obj.maxJoystickValue;
-            if abs(out)>0
+            if abs(out)>1
                 out = sign(out);
-                obj.ResetEnc(out);
+                obj.ResetEnc(out*obj.maxJoystickValue);
                 return;
             end
             if abs(out)<obj.joystickResponseThreshold
@@ -45,14 +48,17 @@ classdef HardwareIOGen3 < Rig
             end 
          end
         function out = ReadIR(obj)
-               
+                writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
                out = obj.Try('UnsafeReadIR');
+               writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,0);
         end
-        function out = UnsafeReadIR(obj)      
+        function out = UnsafeReadIR(obj)
                 out = ~readDigitalPin(obj.arduinoBoard,obj.breakBeamPin);
         end
         function out = ReadLick(obj)
+            writeDigitalPin(obj.arduinoBoard,obj.lickPowerPin,1);
             val = readVoltage(obj.arduinoBoard,obj.lickmeterReadPin);
+            disp(val);
             out = abs(val-obj.lickNominalVoltage)>obj.lickVoltageDelta;
         end
         function obj = GiveWater(obj,time)
