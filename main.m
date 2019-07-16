@@ -7,9 +7,6 @@ addpath('Main Game');
 addpath('Img');
 
 requestInput;
-if ~(exist('sender') && exist('psswd') && exist('mailRecipient'))
-emailError; 
-end
 developerMode = isfile('devMode.ignore');
 
 
@@ -23,9 +20,7 @@ rect = [0,0,1,1];
 if usingKeyboard
     io = Keyboard;
 else
-
     choice = menu('Which circuit board are you using?', 'Gen2 (Purple)','Gen4','Gen2.1 (Gen3 hardware on purple PCB)','Headfixed');
-
     switch choice
         case 1
             io = HardwareIOGen2(port);
@@ -39,9 +34,8 @@ else
     end
 end
 
+emailer = Emailer('sender','recipients');
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
-
-
 renderer = Renderer(screenNum,0.5,rect);
 grating = GratedCircle;
 greenCirc = TargetRing;
@@ -66,20 +60,12 @@ catch e
     if ~developerMode
             msg = char(getReport(e,'extended','hyperlinks','off'));
             subject = "Autobehaviour ERROR: rig "+string(rig)+" mouse "+string(mouseID);
-            try
-                matlabmail(mailRecipient,msg,subject,sender,psswd);
-            catch 
-                emailError;
-            end
+            emailer.Send(subject,msg);
     end
     rethrow(e);
 end
 if manager.GetNumberOfGamesPlayed()>=numTrials
     msg = char("mouse "+string(mouseID) + " on rig " + string(rig) + " has successfully completed " + string(numTrials) + " trials.");
     subject = "Autobehaviour SUCCESS: rig "+string(rig)+" mouse "+string(mouseID);
-    try
-        matlabmail(mailRecipient,msg,subject,sender,psswd);
-    catch e
-        emailError;
-    end
+    emailer.Send(subject,msg);
 end
