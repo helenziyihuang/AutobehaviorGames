@@ -5,9 +5,14 @@ classdef Emailer < handle
         recipientList
         senderFileName
         recipientFileName
+        developerMode
     end
     methods (Access = public)
-        function obj = Emailer(senderFileName,recipientFileName)
+        function obj = Emailer(senderFileName,recipientFileName,developerMode)
+            obj.developerMode = developerMode;
+            if obj.developerMode
+                return;
+            end
             obj.senderFileName = senderFileName;
             obj.recipientFileName = recipientFileName;
             try
@@ -97,6 +102,9 @@ classdef Emailer < handle
             obj.Send("")
         end
         function obj = Send(obj,subject,message,recipients)
+            if obj.developerMode
+                return;
+            end
             try
             if isempty(recipients)
                 error('no recipient declared');

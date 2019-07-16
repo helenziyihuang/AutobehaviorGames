@@ -9,13 +9,11 @@ classdef RandomizedBackground < Renderable
     methods(Access = public)
         function obj = RandomizedBackground(imgFileName,quantity)
             obj.quantity = quantity;
-            [obj.imageMatrix,~,alpha] = imread(imgFileName,'png');
-            obj.imageMatrix(:,:,4) = alpha;
+            obj.imageMatrix = obj.PngToImg(imgFileName);
             obj.screenBounded = false;
         end
         function obj = Awake(obj)
             windowSize = obj.Renderer.WindowSize();
-            disp(windowSize);
             sizeVector = ones(1,2)* 2*obj.radius;
             for i = 1:obj.quantity
                 pos = (rand(1,2)-0.5).*windowSize;

@@ -1,22 +1,32 @@
- 
+
+%clear workspace
 clc; 
 clear all;
-addpath('PTB-Game-Engine/GameEngine');
-addpath('Common');
-addpath('Main Game');
-addpath('Img');
 
-requestInput;
-developerMode = isfile('devMode.ignore');
+addpath('PTB-Game-Engine/GameEngine');     %game engine
+addpath('Common');                         %files used by all the games (main, lickspout only, and joystick only)
+addpath('Main Game');                      %files used by this game
+addpath('Img');                            %image files
 
+requestInput;%get rig specific data from user via GUI
 
+developerMode = isfile('devMode.ignore');%this allows devmode to be set independent of rig, and ignored by git requests
+
+%if we are in developer mode, give user the option to use keyboard as input
 if developerMode
 choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
 usingKeyboard = choice==1;
 else
 usingKeyboard = false;
 end
+
+%what percent of the screen do we want to render to?
+%[min x, min y, max x, max y] 0 and 1 are the edges of the screen
+% this is used for multiple monitor setups like in the headfixed rigs
 rect = [0,0,1,1];
+
+
+
 if usingKeyboard
     io = Keyboard;
 else
@@ -30,38 +40,49 @@ else
             io = HardwareIOGen2_1(port);
         case 4
             io = HardwareHeadfixed(port,str2num(rig));
+            % headfixed rigs use a triple monitor setup
+            % we can choose to render to only the middle monitor by setting
+            % the rect to the middle third of the screen
             rect = [1/3,0,2/3,1];
     end
 end
 
-emailer = Emailer('sender','recipients');
+%initialize objects
+emailer = Emailer('sender','recipients',developerMode);%doesn't send mail if we are in dev mode
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
-renderer = Renderer(screenNum,0.5,rect);
+renderer = Renderer(screenNum,0.5,rect);%(screenNumber,default background color,rect to render to)
 grating = GratedCircle;
 greenCirc = TargetRing;
-background = RandomizedBackground('backgroundDot.png',20);
-background.SetParent(grating);
-background.RenderAfter(greenCirc)
-iescape = EscapeQuit;
+background = RandomizedBackground('backgroundDot.png',20);%(image, quantity)
+background.SetParent(grating);%make background the child of grating so that the move in unison
+grating.RenderAfter(greenCirc);%make grating render behind green circle
+background.RenderAfter(grating)%make background render  last
+iescape = EscapeQuit;%object that makes game quit if you press the escape key
 sound = SoundMaker;
 
 
 controller = GratedCircleController(grating,io);
 
+%manager handles game logic. Constructor params are references to objects
+%that it interacts with
 manager = MainGameManager(grating,greenCirc,background,controller,io,sound,results);
 manager.SetMaxTrials(numTrials);
 manager.SetAllowIncorrect(reward);
 
 
 ge = GameEngine;
+%game engine has built in error handling, but we want to do email error
+%notification outside of that
+%the reason why is that built in error handling deals with safety stuff
+%like making sure the solenoids are shut off if an error occurs.
+% emailing takes a long time, so if that were to happen before the solenoid
+% error function, the mouse cage could get flooded
 try
     ge.Start(); 
 catch e
-    if ~developerMode
-            msg = char(getReport(e,'extended','hyperlinks','off'));
-            subject = "Autobehaviour ERROR: rig "+string(rig)+" mouse "+string(mouseID);
-            emailer.Send(subject,msg);
-    end
+    msg = char(getReport(e,'extended','hyperlinks','off'));
+    subject = "Autobehaviour ERROR: rig "+string(rig)+" mouse "+string(mouseID);
+    emailer.Send(subject,msg);
     rethrow(e);
 end
 if manager.GetNumberOfGamesPlayed()>=numTrials
