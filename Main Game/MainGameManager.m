@@ -21,11 +21,13 @@ classdef MainGameManager < Manager
         hasHit
         allowIncorrect
         soundMaker
+        background
     end
     methods (Access = public)
-        function obj = MainGameManager(gratedCircle,targetCircle,controller,ioDevice,soundMaker,results)
+        function obj = MainGameManager(gratedCircle,targetCircle,background,controller,ioDevice,soundMaker,results)
             obj.gratedCircle = gratedCircle;
             obj.targetCircle = targetCircle;
+            obj.background = background;
             obj.controller = controller;
             obj.ioDevice = ioDevice;
             obj.results = results;
@@ -127,9 +129,11 @@ classdef MainGameManager < Manager
                     obj.ioDevice.CloseServos();
                 end
                 obj.controller.enabled = false;
+                obj.background.RandomizePositions();
             end
             obj.targetCircle.enabled = running;
             obj.gratedCircle.enabled = running;
+            obj.background.enabled = running;
             obj.ResetBackground();
         end
         function obj = SetMaxTrials(obj,num)

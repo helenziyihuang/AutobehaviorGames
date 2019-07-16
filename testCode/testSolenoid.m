@@ -1,8 +1,9 @@
 clc
 clear all;
-port = 'COM6';
-io = HardwareIOGen3(port);
+port = 'COM5';
+io = HardwareIOGen4(port);
 io.Awake();
+disp('connecteds')
 while ~GetKey('ESCAPE')
     if GetKey('s')
         try

@@ -1,4 +1,4 @@
-classdef HardwareIOGen3 < Rig
+classdef HardwareIOGen4 < Rig
     properties(Constant)
         leftServoPin = "D10"
         rightServoPin = "D9"
@@ -13,7 +13,7 @@ classdef HardwareIOGen3 < Rig
         lickNominalVoltage = 5;
     end
     methods (Access = public)
-        function obj = HardwareIOGen3(port)
+        function obj = HardwareIOGen4(port)
             obj.port = port;
             obj.digitalOutputPins = [obj.solenoidPin, obj.beamPowerPin, obj.servoPowerPin];
             obj.digitalInputPins = [];
@@ -28,9 +28,9 @@ classdef HardwareIOGen3 < Rig
             
             obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin);
             obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin);
-            obj.CloseServos();
-             writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
-             obj.PowerServos(true);
+            obj.CloseSolenoid();
+             writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,0);
+             obj.PowerServos(false);
         end
          function out = UnsafeReadJoystick(obj)
             out = readCount(obj.encoder)/obj.maxJoystickValue;
