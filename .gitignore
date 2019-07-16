@@ -5,9 +5,12 @@
 # Matlab workspace files
 *.mat
 
+#custom file type to store data locally as text
 *.ignore
 
+#matlab autosave
 *.asv
 
+#used for testing new features while developing
 test.m
 testClass.m

@@ -67,6 +67,7 @@ classdef MainGameManager < Manager
             obj.gratedCircle.SetVelocity([0,0]);
             obj.results.LogSuccess(obj.Game.GetTime());
             obj.ioDevice.GiveWater(obj.waterGiveTime);
+            obj.ioDevice.CloseServos();
             obj.DisableFor(obj.successPauseTime);
             obj.DelayedCall('EndTrial',obj.successPauseTime);
         end

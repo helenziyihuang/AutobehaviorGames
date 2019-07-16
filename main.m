@@ -12,17 +12,20 @@ emailError;
 end
 developerMode = isfile('devMode.ignore');
 
+
 if developerMode
 choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
 usingKeyboard = choice==1;
 else
 usingKeyboard = false;
 end
-
+rect = [0,0,1,1];
 if usingKeyboard
     io = Keyboard;
 else
-    choice = menu('Which circuit board are you using?', 'Gen2','Gen4','Gen2.1 (Gen3 hardware on purple PCB)');
+
+    choice = menu('Which circuit board are you using?', 'Gen2 (Purple)','Gen4','Gen2.1 (Gen3 hardware on purple PCB)','Headfixed');
+
     switch choice
         case 1
             io = HardwareIOGen2(port);
@@ -30,13 +33,16 @@ else
             io = HardwareIOGen4(port);
         case 3
             io = HardwareIOGen2_1(port);
+        case 4
+            io = HardwareHeadfixed(port,str2num(rig));
+            rect = [1/3,0,2/3,1];
     end
 end
 
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
 
 
-renderer = Renderer(screenNum);
+renderer = Renderer(screenNum,0.5,rect);
 grating = GratedCircle;
 greenCirc = TargetRing;
 background = RandomizedBackground('backgroundDot.png',20);

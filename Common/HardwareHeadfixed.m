@@ -1,39 +1,47 @@
-classdef HardwareIOGen4 < Rig
-    properties(Constant)
-        leftServoPin = "D10"
-        rightServoPin = "D9"
-        servoPowerPin = "D6"
-        encoderPinA = "D2"
-        encoderPinB = "D3"
-        solenoidPin = "D8"
-        lickmeterReadPin  = "A3"
-        lickPowerPin = "D12";
-        breakBeamPin = "D7"
-        beamPowerPin = "D4"
-        lickVoltageDelta = 0.1;
-        lickNominalVoltage = 5;
+classdef HardwareHeadfixed < Rig
+        properties(Constant)
+        leftServoPin = "D11"
+        rightServoPin = "D10"
+        encoderPinA = "D3"
+        encoderPinB = "D2"
+        solenoidPin = "A1"
+        lickmeterReadPin  = "A5"
+        lickmeterPowerPin = "A4"
         
-    end
+        
+        %table of servo open positions
+        %rig number | right open position | left open position
+        servoPositionTable = [...
+            0,0.6,0.4;...
+            1,0.6,0.3;...
+            2,0.65,0.3;...
+            3,0.65,0.5;...
+            4,0.65,0.35;...
+            5,0.6,0.4;...
+            6,0.6,0.4;...
+            10,0.65,0.4;...
+            20,0.6,0.4]
+        end
     methods (Access = public)
-        function obj = HardwareIOGen4(port)
+        function obj = HardwareHeadfixed(port,rigNum)
             obj.port = port;
-            obj.digitalOutputPins = [obj.solenoidPin, obj.beamPowerPin, obj.servoPowerPin,obj.lickPowerPin];
+            [obj.leftServoOpenPos,obj.rightServoOpenPos] = obj.getServoPositions(rigNum);
+            obj.digitalOutputPins = [obj.solenoidPin,obj.lickmeterPowerPin];
             obj.digitalInputPins = [];
             obj.analogInputPins = [obj.lickmeterReadPin];
-            obj.pullupPins = [obj.breakBeamPin];
+            obj.pullupPins = [];
+           obj.leftServoClosedPos = 0;
+            obj.rightServoClosedPos = 1;
         end
-        function obj = Awake(obj)          
+         function obj = Awake(obj)          
             obj.arduinoBoard = arduino(obj.port,'uno','libraries',{'servo','rotaryEncoder'});
             obj.ConfigurePins();            
-            obj.leftServoOpenPos = 0.5;
-            obj.rightServoOpenPos = 0.5;
+            
             obj.encoder = rotaryEncoder(obj.arduinoBoard, obj.encoderPinA,obj.encoderPinB);
             
             obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
             obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
-             obj.CloseServos();
-             
-             
+            obj.CloseServos();
         end
          function out = UnsafeReadJoystick(obj)
             out = readCount(obj.encoder)/obj.maxJoystickValue;
@@ -48,17 +56,10 @@ classdef HardwareIOGen4 < Rig
             end 
          end
         function out = ReadIR(obj)
-                writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
-               out = obj.Try('UnsafeReadIR');
-               writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,0);
-        end
-        function out = UnsafeReadIR(obj)
-                out = ~readDigitalPin(obj.arduinoBoard,obj.breakBeamPin);
+            out = true;
         end
         function out = ReadLick(obj)
-            writeDigitalPin(obj.arduinoBoard,obj.lickPowerPin,1);
             val = readVoltage(obj.arduinoBoard,obj.lickmeterReadPin);
-            disp(val);
             out = abs(val-obj.lickNominalVoltage)>obj.lickVoltageDelta;
         end
         function obj = GiveWater(obj,time)
@@ -72,15 +73,21 @@ classdef HardwareIOGen4 < Rig
         function obj = CloseSolenoid(obj)
             writeDigitalPin(obj.arduinoBoard,obj.solenoidPin,0);
         end
-        function obj = PositionServos(obj,left,right)
-            obj.PowerServos(true);
-            obj.PositionServos@Rig(left,right);
-            obj.DelayedCall('PowerServos',obj.servoAdjustmentTime,false);
 
+    end
+    methods (Access = private)
+        function out = tableLookup(obj,table,value)
+            for i = 1:numel(table(:,1))
+                if table(i,1) == value
+                    out = table(i,:);
+                    return;
+                end
+            end
         end
-        function obj = PowerServos(obj,state)
-            writeDigitalPin(obj.arduinoBoard,obj.servoPowerPin,state);
+        function [left,right] = getServoPositions(obj,rig)
+            entry = obj.tableLookup(obj.servoPositionTable,rig);
+            right = entry(2);
+            left = entry(3);
         end
-
     end
 end

@@ -1,16 +1,18 @@
 classdef Rig < IODevice
     properties(Constant)
-        leftServoOpenPos = 0.4
-        rightServoOpenPos = 0.6
-        leftServoClosedPos = 0
-        rightServoClosedPos = 1
         joystickResponseThreshold = 0.2;
         maxJoystickValue = 100
         servoAdjustmentTime = 0.5;
         evaporationConstant = .15/3600;
         readAttemptsBeforeFailure = 100;
+        minServoPulse = 0.001;
+        maxServoPulse = 0.002;
     end
      properties(Access = protected)
+        leftServoOpenPos = 0.4
+        rightServoOpenPos = 0.6
+        leftServoClosedPos = 0
+        rightServoClosedPos = 1
         port
         arduinoBoard
         leftServo
