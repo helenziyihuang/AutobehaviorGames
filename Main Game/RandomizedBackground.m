@@ -36,9 +36,15 @@ classdef RandomizedBackground < Renderable
         function out = GenerateRandomPosition(obj,instance)
             windowSize = obj.Renderer.WindowSize();
             out = (rand(1,2)-0.5).*windowSize.*obj.range;
+            for i = 1:2
+                if abs(out(i))<2*obj.radius
+                    out = obj.GenerateRandomPosition(instance);
+                    return;
+                end
+            end
             for i = 1:size(obj.position,1)
                 dist = sum(sqrt((out-obj.position(i,:)).^2));
-                if i~=instance && (dist<2*obj.radius)
+                if i~=instance && ((dist<2*obj.radius))
                     out = obj.GenerateRandomPosition(instance);
                 end
             end
