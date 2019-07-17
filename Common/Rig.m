@@ -51,7 +51,7 @@ classdef Rig < IODevice
              obj.PositionServos(obj.leftServoOpenPos,obj.rightServoOpenPos);
         end
         function obj = OpenSide(obj,side)
-            if side>0
+            if side<0
                 obj.PositionServos(obj.leftServoOpenPos,obj.rightServoClosedPos);
             else
                 obj.PositionServos(obj.leftServoClosedPos,obj.rightServoOpenPos);
@@ -84,6 +84,9 @@ classdef Rig < IODevice
         function obj = CloseSolenoid(obj)
         end
         function obj = OnError(obj)
+            obj.TurnOffEverything();
+        end
+        function obj = TurnOffEverything(obj)
             obj.CloseSolenoid();
             obj.CloseServos();
         end

@@ -81,6 +81,12 @@ classdef HardwareIOGen4 < Rig
         function obj = PowerServos(obj,state)
             writeDigitalPin(obj.arduinoBoard,obj.servoPowerPin,state);
         end
+        function obj = TurnOffEverything(obj)
+            obj.TurnOffEverything@Rig();
+            obj.PowerServos(false);
+            writeDigitalPin(obj.arduinoBoard,obj.lickPowerPin,0);
+            writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,0);
+        end
 
     end
 end

@@ -65,7 +65,9 @@ classdef MainGameManager < Manager
             obj.soundMaker.RewardNoise();
             obj.gratedCircle.SetPosition(obj.targetCircle.GetPosition);
             obj.gratedCircle.SetVelocity([0,0]);
-            obj.results.LogSuccess(obj.Game.GetTime());
+            if ~isempty(obj.results)
+                obj.results.LogSuccess(obj.Game.GetTime());
+            end
             obj.ioDevice.GiveWater(obj.waterGiveTime);
             obj.ioDevice.CloseServos();
             obj.DisableFor(obj.successPauseTime);
@@ -76,8 +78,9 @@ classdef MainGameManager < Manager
                 return;
             end
             obj.hasHit = true;
-            
-            obj.results.LogHit(side);
+            if ~isempty(obj.results)
+                obj.results.LogHit(side);
+            end
             if ~obj.allowIncorrect
                 obj.EndTrial();
                 obj.Failure();
@@ -90,11 +93,13 @@ classdef MainGameManager < Manager
         end
         function obj = StartTrial(obj)
             obj.StopAllDelayedCalls();
+            side = obj.ChooseSide();
             obj.SetState(true);
             obj.hasHit = false;
-            side = obj.ChooseSide();
             obj.gratedCircle.Reset(side);
-            obj.results.StartTrial(side,1,obj.Game.GetTime());
+            if ~isempty(obj.results)
+                obj.results.StartTrial(side,1,obj.Game.GetTime());
+            end
             obj.currentTrialNum = obj.currentTrialNum +1;
             obj.DelayedCall('TimeOut',obj.timeOutTime);
         end
@@ -103,16 +108,24 @@ classdef MainGameManager < Manager
             obj.SetState(false);
             if obj.currentTrialNum>0
                 clc;
-                obj.results.shortStats();
+                if ~isempty(obj.results)
+                    obj.results.shortStats();
+                end
             end
-            obj.results.save();
+            if ~isempty(obj.results)
+                obj.results.save();
+            end
             obj.WaitForIR();
         end
         function out = ChooseSide(obj)
             %chooses the side that the stimulus will appear on
             %returns -1 (left) or 1 (right)
                 choice = rand();%used to decide if grated circle starts on the left or right
-                rightProb = obj.results.getLeftProportionOnInterval(5);
+                if ~isempty(obj.results)
+                    rightProb = obj.results.getLeftProportionOnInterval(5);
+                else
+                    rightProb = 0.5;
+                end
                 out = 1;
                 if choice > rightProb
                     out = -1;
@@ -124,17 +137,21 @@ classdef MainGameManager < Manager
             end
             if running
                 obj.controller.DisableFor(obj.stimPauseTime+obj.servoDelay);
-                obj.ioDevice.DelayedCall('OpenServos',obj.stimPauseTime+obj.servoDelay);
+                obj.DelayedServoOpen();
             else
                 if closeServos
                     obj.ioDevice.CloseServos();
                 end
                 obj.controller.enabled = false;
-                obj.background.RandomizePositions();
+                if ~isempty(obj.background)
+                    obj.background.RandomizePositions();
+                end
             end
             obj.targetCircle.enabled = running;
             obj.gratedCircle.enabled = running;
-            obj.background.enabled = running;
+            if ~isempty(obj.background)
+                obj.background.enabled = running;
+            end
             obj.ResetBackground();
         end
         function obj = SetMaxTrials(obj,num)
@@ -142,7 +159,7 @@ classdef MainGameManager < Manager
         end
         function obj = TimeOut(obj)
             obj.EndTrial();
-            if ~obj.ioDevice.ReadIR()
+            if ~obj.ioDevice.ReadIR() && ~isempty(obj.results)
                 obj.results.cancelTrial();
             else
                 obj.Failure();
@@ -162,6 +179,9 @@ classdef MainGameManager < Manager
         end
         function out = GetNumberOfGamesPlayed(obj)
             out = obj.currentTrialNum;
+        end
+        function obj = DelayedServoOpen(obj)
+            obj.ioDevice.DelayedCall('OpenServos',obj.stimPauseTime+obj.servoDelay);
         end
     end
 end

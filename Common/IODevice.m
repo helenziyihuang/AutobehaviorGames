@@ -15,6 +15,7 @@ classdef IODevice < GameObject
         end
         function [] = OpenServos(obj)
         end
-        
+        function [] = OpenSide(obj)
+        end
     end
 end
