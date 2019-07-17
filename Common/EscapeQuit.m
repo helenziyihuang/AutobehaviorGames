@@ -4,7 +4,9 @@ classdef EscapeQuit < GameObject
             KbCheck();
         end
         function obj = Update(obj)
-                   if GetKey('ESC') obj.Game.Quit(); end
+                   if GetKey('ESC') || GetKey('ESCAPE')
+                       obj.Game.Quit(); 
+                   end
         end
     end
 end

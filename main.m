@@ -53,10 +53,10 @@ results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
 renderer = Renderer(screenNum,0.5,rect);%(screenNumber,default background color,rect to render to)
 grating = GratedCircle;
 greenCirc = TargetRing;
-background = RandomizedBackground('backgroundDot.png',40,[2,1]);%(image, quantity, [x range, y range])
-background.SetParent(grating);%make background the child of grating so that the move in unison
+%background = RandomizedBackground('backgroundDot.png',40,[2,1]);%(image, quantity, [x range, y range])
+%background.SetParent(grating);%make background the child of grating so that the move in unison
 grating.RenderAfter(greenCirc);%make grating render behind green circle
-background.RenderAfter(grating);%make background render  last
+%background.RenderAfter(grating);%make background render  last
 iescape = EscapeQuit;%object that makes game quit if you press the escape key
 sound = SoundMaker;
 
@@ -65,7 +65,7 @@ controller = GratedCircleController(grating,io);
 
 %manager handles game logic. Constructor params are references to objects
 %that it interacts with
-manager = MainGameManager(grating,greenCirc,background,controller,io,sound,results);
+manager = MainGameManager(grating,greenCirc,[],controller,io,sound,results);
 manager.SetMaxTrials(numTrials);
 manager.SetAllowIncorrect(reward);
 
