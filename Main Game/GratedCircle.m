@@ -3,7 +3,7 @@ classdef GratedCircle < PhysicsObject
         radius = 100;
         contrast = 1;
     end
-    properties(Access = private)
+    properties(Access = protected)
         initialOffset;
     end
     methods(Access = public)

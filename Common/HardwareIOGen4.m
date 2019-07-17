@@ -58,7 +58,6 @@ classdef HardwareIOGen4 < Rig
         function out = ReadLick(obj)
             writeDigitalPin(obj.arduinoBoard,obj.lickPowerPin,1);
             val = readVoltage(obj.arduinoBoard,obj.lickmeterReadPin);
-            disp(val);
             out = abs(val-obj.lickNominalVoltage)>obj.lickVoltageDelta;
         end
         function obj = GiveWater(obj,time)

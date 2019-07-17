@@ -5,6 +5,7 @@ clear all;
 
 addpath('PTB-Game-Engine/GameEngine');     %game engine
 addpath('Common');                         %files used by all the games (main, lickspout only, and joystick only)
+addpath('Lickspout Only');
 
 requestInput;%get rig specific data from user via GUI
 
@@ -37,6 +38,8 @@ emailer = Emailer('sender','recipients',developerMode);%doesn't send mail if we 
 iescape = EscapeQuit;%object that makes game quit if you press the escape key
 sound = SoundMaker;
 
+manager = LickspoutGameManager(io,sound);
+
 
 ge = GameEngine;
 %game engine has built in error handling, but we want to do email error
@@ -52,9 +55,4 @@ catch e
     subject = "Autobehaviour ERROR: rig "+string(rig)+" mouse "+string(mouseID);
     emailer.Send(subject,msg);
     rethrow(e);
-end
-if manager.GetNumberOfGamesPlayed()>=numTrials
-    msg = char("mouse "+string(mouseID) + " on rig " + string(rig) + " has successfully completed " + string(numTrials) + " trials.");
-    subject = "Autobehaviour SUCCESS: rig "+string(rig)+" mouse "+string(mouseID);
-    emailer.Send(subject,msg);
 end

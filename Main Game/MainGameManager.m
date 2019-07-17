@@ -1,4 +1,4 @@
-classdef MainGameManager < Manager
+classdef MainGameManager < GameObject
     properties (Constant)
         tolerance = 30%the mouse must place the grated circle at most this far from the target ring to win
         leftProportionInterval = 5;
@@ -11,6 +11,7 @@ classdef MainGameManager < Manager
         servoOpenTime = 0.5;%time it takes for servos to adjust (estimated)
     end
     properties (Access = protected)
+        ioDevice
         gratedCircle
         targetCircle
         controller

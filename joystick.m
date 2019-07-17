@@ -37,7 +37,7 @@ end
 
 emailer = Emailer('sender','recipients',developerMode);%doesn't send mail if we are in dev mode
 renderer = Renderer(screenNum,0.5);%(screenNumber,default background color)
-grating = GratedCircle;
+grating = JoystickGratedCircle;
 greenCirc = TargetRing;
 grating.RenderAfter(greenCirc);%make grating render behind green circle
 iescape = EscapeQuit;%object that makes game quit if you press the escape key
