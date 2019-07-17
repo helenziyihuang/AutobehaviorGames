@@ -9,6 +9,9 @@ classdef Emailer < handle
     end
     methods (Access = public)
         function obj = Emailer(senderFileName,recipientFileName,developerMode)
+            if nargin<3
+                developerMode = false;
+            end
             obj.developerMode = developerMode;
             if obj.developerMode
                 return;
@@ -17,10 +20,8 @@ classdef Emailer < handle
             obj.recipientFileName = recipientFileName;
             try
             senderData = LoadStrings(senderFileName);
-            obj.sender = cell(1,1);
-            obj.sender{1} = senderData{1};
-            obj.password = cell(1,1);
-            obj.password{1} = senderData{2};
+            obj.SetSender(senderData{1});
+            obj.SetPassword(senderData{2});
             catch 
             end
             try
@@ -28,6 +29,14 @@ classdef Emailer < handle
             catch
             end
             obj.Auth();
+        end
+        function obj = SetSender(obj,str)
+            obj.sender = cell(1,1);
+            obj.sender{1} = string(str);
+        end
+        function obj = SetPassword(obj,str)
+             obj.password = cell(1,1);
+            obj.password{1} = string(str);
         end
         function obj = Auth(obj)
             if isempty(obj.sender) || isempty(obj.password)
@@ -39,7 +48,8 @@ classdef Emailer < handle
         function obj =  AuthError(obj)
             choice = menu("Email error notification has not yes been set up or the username/password is incorrect. Would you like to set up email now?","Yes","No, continue without emailing errors.");
             if choice == 1
-               obj.EditSender();
+               obj.InputSender();
+               obj.Save(obj.senderFileName,obj.sender,Obfuscate(obj.password{1}));
                obj.EditRecipients();
                obj.Auth();
             end
@@ -53,11 +63,11 @@ classdef Emailer < handle
              else
                  obj.InputSender();
              end
-             obj.Save(obj.senderFileName,obj.sender,obj.password);
+             obj.Save(obj.senderFileName,obj.sender,Obfuscate(obj.password{1}));
         end
         function obj = InputSender(obj)
-            obj.sender = input('\nEmail address to send error messages: ','s');
-            obj.password = input('\nPassword of sender email. WARNING THIS WILL BE STORED LOCALLY AS PLAINTEXT: ','s');
+            obj.SetSender(input('\nEmail address to send error messages: ','s'));
+            obj.SetPassword(input('\nPassword of sender email. WARNING THIS WILL BE STORED LOCALLY AS PLAINTEXT: ','s'));
         end
         function obj = EditRecipients(obj)
              if ~isempty(obj.recipientList)
@@ -114,12 +124,12 @@ classdef Emailer < handle
             if nargin<4
                 recipient = obj.recipientList;
             end
-            sender = char(obj.sender{1});
-            password = char(obj.password{1});
-            setpref('Internet','E_mail',sender);
+            sendr= char(obj.sender{1});
+            pwd = char(Obfuscate(obj.password{1},true));
+            setpref('Internet','E_mail',sendr);
             setpref('Internet','SMTP_Server','smtp.gmail.com');
-            setpref('Internet','SMTP_Username',sender);
-            setpref('Internet','SMTP_Password',password);
+            setpref('Internet','SMTP_Username',sendr);
+            setpref('Internet','SMTP_Password',pwd);
 
             props = java.lang.System.getProperties;
             props.setProperty('mail.smtp.auth','true');
@@ -128,7 +138,7 @@ classdef Emailer < handle
             sendmail(recipients, char(subject), char(message));
             catch e
                 obj.AuthError();
-                warning(e);
+                warning(e.message);
             end
         end
         function Save(obj,fileName,varargin)
