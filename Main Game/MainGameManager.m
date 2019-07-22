@@ -64,7 +64,7 @@ classdef MainGameManager < GameObject
         function obj = Success(obj)
             obj.controller.enabled = false;
             obj.soundMaker.RewardNoise();
-            obj.gratedCircle.SetPosition(obj.targetCircle.GetPosition);
+            obj.gratedCircle.SetRootPosition(obj.targetCircle.GetGlobalPosition());
             obj.gratedCircle.SetVelocity([0,0]);
             if ~isempty(obj.results)
                 obj.results.LogSuccess(obj.Game.GetTime());

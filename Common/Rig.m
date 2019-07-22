@@ -83,6 +83,9 @@ classdef Rig < IODevice
         end
         function obj = CloseSolenoid(obj)
         end
+        function obj = OnQuit(obj)
+            obj.TurnOffEverything();
+        end
         function obj = OnError(obj)
             obj.TurnOffEverything();
         end

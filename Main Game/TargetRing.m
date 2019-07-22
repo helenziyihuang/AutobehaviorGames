@@ -1,4 +1,4 @@
-classdef TargetRing < PhysicsObject
+classdef TargetRing < Renderable
     properties(Constant)
         radius = 100/0.75;
         innerRadius = 100;

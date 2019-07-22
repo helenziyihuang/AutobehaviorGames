@@ -22,7 +22,7 @@ classdef GratedCircle < PhysicsObject
         end
         function obj = Reset(obj,side)
             obj.SetVelocity(0,1);
-            obj.SetPosition([obj.initialOffset*side,0]);
+            obj.SetRootPosition([obj.initialOffset*side,0]);
         end
        
     end

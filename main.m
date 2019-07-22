@@ -71,6 +71,9 @@ manager.SetAllowIncorrect(reward);
 
 
 ge = GameEngine;
+
+
+
 %game engine has built in error handling, but we want to do email error
 %notification outside of that
 %the reason why is that built in error handling deals with safety stuff
