@@ -1,5 +1,8 @@
-These games are built on the PTB Game Engine (included in this repo).
-Get the latest version of the game engine here: https://github.com/NigelBess/PTB-Game-Engine
+When cloning this repo, make sure you include the submodule!
+git clone --recurse-submodules [link to this repo]
+
+These games are built on the PTB Game Engine (included in this repo). 
+[Documentation for the PTB Game Engine](https://github.com/NigelBess/PTB-Game-Engine/blob/master/Documentation.pdf)
 
 
 Architecture of the Gameobjects in the main game: 
