@@ -46,7 +46,7 @@ classdef Emailer < handle
             end
         end
         function obj =  AuthError(obj)
-            choice = menu("Email error notification has not yes been set up or the username/password is incorrect. Would you like to set up email now?","Yes","No, continue without emailing errors.");
+            choice = menu("Email error notification has not yes been set up or the username/password is incorrect. Would you like reset the sender email address/password?","Yes","No, continue without emailing errors.");
             if choice == 1
                obj.InputSender();
                obj.Save(obj.senderFileName,obj.sender,Obfuscate(obj.password{1}));

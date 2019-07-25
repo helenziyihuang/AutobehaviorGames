@@ -37,6 +37,7 @@ classdef Results < handle
     
     methods
         function obj = Results(id, trials, sessionNum,type)
+            
             %empty buffers for data logging
             obj.startTimes = zeros(1,trials);
             obj.stimSequence = zeros(1,trials);
@@ -55,8 +56,20 @@ classdef Results < handle
             obj.currentTrial = 0;
             %save directory
             obj.sessionID = [datestr(date, 'mmddyy') '_' num2str(obj.sessionNum)];
-            obj.saveDir = strcat('Z:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
-            obj.saveDir2 = strcat('C:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
+            
+        end
+        function obj = setSaveDirectory(obj,primaryDirectory,secondaryDirectory)
+            if nargin<3
+                secondaryDirectory = primaryDirectory;
+            end
+            %sets save directory for data. optional parameter 
+            %secondary directory is for using a networked drive to save data.
+            %if the networked drive is unavailable, data will be saved to secondary
+            fileName = [obj.mouseID, '_', obj.sessionID];
+            obj.saveDir = [primaryDirectory,'/',fileName];
+            obj.saveDir2 = [secondaryDirectory,'/',fileName];
+            %obj.saveDir = strcat('Z:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
+            %obj.saveDir2 = strcat('C:/Autobehavior Data/', obj.mouseID, '_', obj.sessionID);
             try
                 mkdir(obj.saveDir);
             catch
