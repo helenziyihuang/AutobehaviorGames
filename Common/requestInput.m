@@ -23,7 +23,7 @@ function [] = requestInput()
     port = val{5};
     screenNum = str2num(val{6});
     reward = str2num(val{7});
-    saveDir = str2num(val{8});
+    saveDir = val{8};
     saveLocalData;
     evalin('base',"load('values')");
 end
