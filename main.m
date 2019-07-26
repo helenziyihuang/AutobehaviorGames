@@ -27,7 +27,6 @@ rect = [0,0,1,1];
 
 
 
-mainSaveDir = 'Z:/Autobehavior Data';
 secondarySaveDir = 'C:/Autobehavior Data/';
 if usingKeyboard
     io = Keyboard;
@@ -52,7 +51,7 @@ end
 %initialize objects
 emailer = Emailer('sender','recipients',developerMode);%doesn't send mail if we are in dev mode
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
-results.setSaveDirectory(mainSaveDir, secondarySaveDir);
+results.setSaveDirectory(saveDir, secondarySaveDir);
 renderer = Renderer(screenNum,0.5,rect);%(screenNumber,default background color,rect to render to)
 grating = GratedCircle;
 greenCirc = TargetRing;
