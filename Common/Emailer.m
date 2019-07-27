@@ -31,12 +31,10 @@ classdef Emailer < handle
             obj.Auth();
         end
         function obj = SetSender(obj,str)
-            obj.sender = cell(1,1);
-            obj.sender{1} = string(str);
+            obj.sender = string(str);
         end
         function obj = SetPassword(obj,str)
-             obj.password = cell(1,1);
-            obj.password{1} = string(str);
+            obj.password = string(str);
         end
         function obj = Auth(obj)
             if isempty(obj.sender) || isempty(obj.password)
@@ -49,7 +47,7 @@ classdef Emailer < handle
             choice = menu("Email error notification has not yes been set up or the username/password is incorrect. Would you like reset the sender email address/password?","Yes","No, continue without emailing errors.");
             if choice == 1
                obj.InputSender();
-               obj.Save(obj.senderFileName,obj.sender,Obfuscate(obj.password{1}));
+               obj.Save(obj.senderFileName,{obj.sender,Obfuscate(obj.password)});
                obj.EditRecipients();
                obj.Auth();
             end
@@ -63,7 +61,7 @@ classdef Emailer < handle
              else
                  obj.InputSender();
              end
-             obj.Save(obj.senderFileName,obj.sender,Obfuscate(obj.password{1}));
+             obj.Save(obj.senderFileName,{obj.sender,Obfuscate(obj.password)});
         end
         function obj = InputSender(obj)
             obj.SetSender(input('\nEmail address to send error messages: ','s'));
@@ -101,17 +99,18 @@ classdef Emailer < handle
             rec = obj.recipientList;
             n = numel(rec);
             rec{end+1} = "Cancel";
-            choice = menu("Which recipient would you like to remove?",obj.recipientList,"Cancel");
+            choice = menu("Which recipient would you like to remove?",rec);
             if choice> n
                 obj.EditRecipients();
             else
-                obj.recipientList{choice} = [];
+                obj.recipientList(choice) = [];
             end
         end
-        function obj = Success(obj)
-            obj.Send("")
-        end
+
         function obj = Send(obj,subject,message,recipients)
+            if nargin<4
+                recipients = obj.recipientList;
+            end
             if obj.developerMode
                 return;
             end
@@ -121,11 +120,9 @@ classdef Emailer < handle
             end
             subject = char(subject);
             message = char(message);
-            if nargin<4
-                recipient = obj.recipientList;
-            end
-            sendr= char(obj.sender{1});
-            pwd = char(Obfuscate(obj.password{1},true));
+            
+            sendr= char(obj.sender);
+            pwd = char(Obfuscate(obj.password,true));
             setpref('Internet','E_mail',sendr);
             setpref('Internet','SMTP_Server','smtp.gmail.com');
             setpref('Internet','SMTP_Username',sendr);
@@ -138,11 +135,14 @@ classdef Emailer < handle
             sendmail(recipients, char(subject), char(message));
             catch e
                 obj.AuthError();
-                warning(e.message);
+                warning(getReport(e));
             end
         end
-        function Save(obj,fileName,varargin)
-            SaveStrings(fileName,varargin);
+        function out = GetRecipientList(obj)
+            out = obj.recipientList;
+        end
+        function [] = Save(obj,fileName,strings)
+            SaveStrings(fileName,strings);
         end
     end
 end
