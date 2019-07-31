@@ -59,6 +59,7 @@ classdef HardwareIOGen4 < Rig
             writeDigitalPin(obj.arduinoBoard,obj.lickPowerPin,1);
             val = readVoltage(obj.arduinoBoard,obj.lickmeterReadPin);
             out = abs(val-obj.lickNominalVoltage)>obj.lickVoltageDelta;
+            disp(val);
         end
         function obj = GiveWater(obj,time)
              writeDigitalPin(obj.arduinoBoard,obj.solenoidPin,1);

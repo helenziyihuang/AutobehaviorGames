@@ -6,7 +6,7 @@ if nargin<3
     decompFactor = 3;
 end
 if nargin<4
-    offset = 37;
+    offset = -37;
 end
 if ~deobfuscate
     native = unicode2native(str);
@@ -14,7 +14,7 @@ if ~deobfuscate
     out = zeros(1,n);
     real = getReal(n);
     out(real) = native+offset;
-    out(~real) = randi(500,1,numel(out(~real)));
+    out(~real) = randi(200,1,numel(out(~real)));
     out = string(native2unicode(out));
 else
     native = unicode2native(str);
