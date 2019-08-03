@@ -32,6 +32,7 @@ classdef HardwareIOGen4 < Rig
             obj.leftServo = servo(obj.arduinoBoard,obj.leftServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
             obj.rightServo = servo(obj.arduinoBoard,obj.rightServoPin,'MinPulseDuration',obj.minServoPulse,'MaxPulseDuration',obj.maxServoPulse);
              obj.CloseServos();
+             writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
              
              
         end
@@ -47,10 +48,8 @@ classdef HardwareIOGen4 < Rig
                 return;
             end 
          end
-        function out = ReadIR(obj)
-                writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,1);
+        function out = ReadIR(obj)         
                out = obj.Try('UnsafeReadIR');
-               writeDigitalPin(obj.arduinoBoard,obj.beamPowerPin,0);
         end
         function out = UnsafeReadIR(obj)
                 out = ~readDigitalPin(obj.arduinoBoard,obj.breakBeamPin);

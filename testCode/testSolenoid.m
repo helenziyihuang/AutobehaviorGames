@@ -1,6 +1,6 @@
 clc
 clear all;
-port = 'COM4';
+port = 'COM5';
 addpath('Common');
 addpath('PTB-Game-Engine/GameEngine');
 fprintf("connecting...\n");
