@@ -31,15 +31,11 @@ secondarySaveDir = 'C:/Autobehavior Data/';
 if usingKeyboard
     io = Keyboard;
 else
-    choice = menu('Which circuit board are you using?', 'Gen2 (Purple)','Gen4','Gen2.1 (Gen3 hardware on purple PCB)','Headfixed');
+    choice = menu('Which circuit board are you using?', 'Gen4','Headfixed');
     switch choice
         case 1
-            io = HardwareIOGen2(port);
-        case 2
             io = HardwareIOGen4(port);
-        case 3
-            io = HardwareIOGen2_1(port);
-        case 4
+        case 2
             io = HardwareHeadfixed(port,str2num(rig));
             % headfixed rigs use a triple monitor setup
             % we can choose to render to only the middle monitor by setting
