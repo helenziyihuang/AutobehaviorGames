@@ -10,7 +10,7 @@ addpath('Img');                            %image files
 
 requestInput;%get rig specific data from user via GUI
 
-developerMode = isfile('devMode.ignore');%this allows devmode to be set independent of rig, and ignored by git requests
+developerMode = (mouseID == '0');%this allows devmode to be set independent of rig, and ignored by git requests
 
 %if we are in developer mode, give user the option to use keyboard as input
 if developerMode
