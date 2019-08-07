@@ -117,7 +117,7 @@ classdef Results < handle
         function [] = LogSuccess(obj, time)
             if ~obj.responded(obj.currentTrial)
                 obj.responseCorrect(obj.currentTrial) = 1;
-                obj.joystickResponses(obj.currentTrial) = obj.stimSequence(obj.currentTrial);
+                obj.joystickResponses(obj.currentTrial) = -obj.stimSequence(obj.currentTrial);
                 obj.responded(obj.currentTrial) = 1;%true
             end
             obj.joystickResponseTimes(obj.currentTrial) = time-obj.startTimes(obj.currentTrial);
