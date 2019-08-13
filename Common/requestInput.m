@@ -1,14 +1,35 @@
 function [] = requestInput()
-    mouseID = [];rig = [];sessionNum=[];numTrials = [];port = [];screenNum=[];reward = []; saveDir = 'Z:/Autobehaviour Data';
+    %Variables to be input by the user
+    mouseID = [];
+    rig = [];
+    sessionNum=[];
+    numTrials = [];
+    port = [];
+    screenNum=[];
+    monitorType = [];   %use to adapt different monitor types (normal or stretched)
+    reward = [];
+    saveDir = 'Z:/Autobehaviour Data';
+    
     if exist('values.mat','file')
         load('values.mat');
     end
-    prompt = {"Mouse ID","Rig" ,"Session Number", "Number of Trials", "Port","Output Monitor Number (zero for single monitor)","Reward On Incorrect (0 or 1)","Save Directory"};
+    
+    %Menu prompted for the input
+    prompt = {
+        "Mouse ID",
+        "Rig",
+        "Session Number",
+        "Number of Trials",
+        "Port",
+        "Output Monitor Number (0 for single monitor)",
+        "Monitor Type (0 for normal, 1 for stretched)";
+        "Reward On Incorrect (0 or 1)",
+        "Save Directory"};
     title = "Settings";
     dims = [1 35];
     
-    
-    defInput = {mouseID,rig,sessionNum,numTrials,port,screenNum,reward,saveDir};
+    %Inputs corresponding to each variables
+    defInput = {mouseID, rig, sessionNum, numTrials, port, screenNum, monitorType, reward, saveDir};
     for i = 1:numel(defInput)
         if ~isstring(defInput{i})
             defInput{i} = num2str(defInput{i});
@@ -22,8 +43,9 @@ function [] = requestInput()
     numTrials = str2num(val{4});
     port = val{5};
     screenNum = str2num(val{6});
-    reward = str2num(val{7});
-    saveDir = val{8};
+    monitorType = str2num(val{7});
+    reward = str2num(val{8});
+    saveDir = val{9};
     saveLocalData;
     evalin('base',"load('values')");
 end
