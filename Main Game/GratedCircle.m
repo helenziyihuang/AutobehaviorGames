@@ -7,8 +7,10 @@ classdef GratedCircle < PhysicsObject
         initialOffset;
     end
     methods(Access = public)
-        function obj = GratedCircle()
-            obj.size = ones(1,2)* 2*obj.radius;
+        function obj = GratedCircle(dim)
+            %use dim for streched screen
+            %use [1,1] for normal screen
+            obj.size = ones(1,2) * 2 * obj.radius .* dim;
             obj.renderLayer = 1;
             obj.screenBounded = true;
             obj.maxPixelsPerFrame = 10;

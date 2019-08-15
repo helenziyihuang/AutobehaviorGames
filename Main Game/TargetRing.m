@@ -4,8 +4,10 @@ classdef TargetRing < Renderable
         innerRadius = 100;
     end
     methods(Access = public)
-        function obj = TargetRing()
-            obj.size = ones(1,2)*2*obj.radius;
+        function obj = TargetRing(dim)
+            %use dim for streched screen
+            %use [1,1] for normal screen
+            obj.size = ones(1,2) * 2 * obj.radius .* dim;
             obj.renderLayer = 0;
         end
         function img = GenerateImage(obj)

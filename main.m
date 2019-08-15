@@ -1,6 +1,6 @@
 
 %clear workspace
-clc; 
+clc;
 clear all;
 
 addpath('PTB-Game-Engine/GameEngine');     %game engine
@@ -8,24 +8,26 @@ addpath('Common');                         %files used by all the games (main, l
 addpath('Main Game');                      %files used by this game
 addpath('Img');                            %image files
 
-requestInput;%get rig specific data from user via GUI
+requestInput;
+%get rig specific data from user via GUI
+%separate function in another file
 
-developerMode = (mouseID == '0');%this allows devmode to be set independent of rig, and ignored by git requests
+developerMode = (mouseID == '0');
+%this allows devmode to be set independent of rig, and ignored by git requests
+%enter mouseID 0 as developer mode
 
 %if we are in developer mode, give user the option to use keyboard as input
 if developerMode
-choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
-usingKeyboard = choice==1;
+    choice = menu('Keyboard or Autobehavior Rig input?','Keyboard','Rig');
+    usingKeyboard = choice==1;
 else
-usingKeyboard = false;
+    usingKeyboard = false;
 end
 
-%what percent of the screen do we want to render to?
+%qwhat percent of the screen do we want to render to?
 %[min x, min y, max x, max y] 0 and 1 are the edges of the screen
 % this is used for multiple monitor setups like in the headfixed rigs
 rect = [0,0,1,1];
-
-
 
 secondarySaveDir = 'C:/Autobehavior Data/';
 if usingKeyboard
@@ -38,7 +40,7 @@ else
         case 2
             io = HardwareHeadfixed(port,str2num(rig));
             % headfixed rigs use a triple monitor setup
-            % we can choose to render to only the middle monitor by setting
+            % we can choose to iirender to only theq middle monitor by setting
             % the rect to the middle third of the screen
             rect = [1/3,0,2/3,1];
     end
@@ -49,9 +51,18 @@ emailer = Emailer('sender','recipients',developerMode);%doesn't send mail if we 
 results = Results(mouseID,numTrials,sessionNum,'closedLoopTraining');
 results.setSaveDirectory(saveDir, secondarySaveDir);
 renderer = Renderer(screenNum,0.5,rect);%(screenNumber,default background color,rect to render to)
-grating = GratedCircle;
-greenCirc = TargetRing;
-%background = RandomizedBackground('backgroundDot.png',40,[2,1]);%(image, quantity, [x range, y range])
+
+%For GratedCircle & TargetRing,
+%Use different constructor with different screen dimensions
+if (monitorType == '1')
+    grating = GratedCircle([23/26, 17/26]);   %argument here as the dimension of the stretched screen
+    greenCirc = TargetRing([23/26, 17/26]);
+else
+    grating = GratedCircle([1,1]);
+    greenCirc = TargetRing([1,1]);
+end
+
+%backgrouqnd = RandomizedBackground('backgroundDot.png',40,[2,1]);%(image, quantity, [x range, y range])
 %background.SetParent(grating);%make background the child of grating so that the move in unison
 grating.RenderAfter(greenCirc);%make grating render behind green circle
 %background.RenderAfter(grating);%make background render  last
