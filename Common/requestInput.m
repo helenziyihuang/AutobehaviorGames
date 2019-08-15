@@ -43,7 +43,7 @@ function [] = requestInput()
     numTrials = str2num(val{4});
     port = val{5};
     screenNum = str2num(val{6});
-    monitorType = str2num(val{7});
+    monitorType = val{7};
     reward = str2num(val{8});
     saveDir = val{9};
     saveLocalData;
